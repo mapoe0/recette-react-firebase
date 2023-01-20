@@ -1,26 +1,35 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
-const AddRecipeForm = () => {
-    const [recipe, setRecipe] = useState({
-        name: '',
-        difficulty: '',
-        ingredient: [''],
-    });
+function AddRecipeForm() {
+    const [name, setName] = useState('')
+    const [difficulty, setDifficulty] = useState(1)
+    const [ingredient, setIngredient] = useState([''])
 
-    const handleChange = (event) => {
-        const {name, value} = event.target;
-        setRecipe({...recipe, [name]: value});
+    const inputRefs = useRef([]);
+
+    useEffect(() => {
+        inputRefs.current[ingredient.length - 1].focus();
+    }, [ingredient]);
+
+    const handleNameChange = (event) => {
+        setName(event.target.value);
     };
-    const handleIngredientChange = (event) => {
 
+    const handleIngredientChange = (event, index) => {
+        const newIngredients = [...ingredient];
+        newIngredients[index] = event.target.value;
+        setIngredient(newIngredients);
+    }
+
+    const handleDifficultyChange = (event) => {
+        setDifficulty(event.target.value)
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         // Code to submit the recipe to the server
     };
-
 
     return (
         <form onSubmit={handleSubmit}>
@@ -30,8 +39,8 @@ const AddRecipeForm = () => {
                     type="text"
                     className="form-control"
                     name="name"
-                    value={recipe.name}
-                    onChange={handleChange}
+                    value={name}
+                    onChange={handleNameChange}
                 />
             </div>
             <div className="form-group">
@@ -39,32 +48,33 @@ const AddRecipeForm = () => {
                 <select
                     className="form-control"
                     name="difficulty"
-                    value={recipe.difficulty}
-                    onChange={handleChange}
+                    value={difficulty}
+                    onChange={handleDifficultyChange}
                 >
-                    <option value="facile">Facile</option>
-                    <option value="moyen">Moyen</option>
-                    <option value="difficile">Difficile</option>
+                    <option value="facile">1</option>
+                    <option value="moyen">2</option>
+                    <option value="difficile">3</option>
                 </select>
             </div>
             <div className="form-group">
                 <label>Ingrédients :</label>
                 {
-                    recipe.ingredient.map((_, index) => {
-                        return (
-                            <div className="add-ingredient-bloc">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="ingredient"
-                                    value={recipe.ingredient[index]}
-                                    onChange={handleIngredientChange}
-                                    key={uuidv4()}
-                                />
-                                <button className="btn btn-secondary">+</button>
-                            </div>
-                        )
-                    })
+                    ingredient.map(
+                        (_, index) => {
+                            return (
+                                <div className="add-ingredient-bloc" key={uuidv4()}>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="ingredient"
+                                        value={ingredient[index]}
+                                        onChange={(event) => handleIngredientChange(event, index)}
+                                        ref={(el) => inputRefs.current[index] = el}
+                                    />
+                                    <button className="btn btn-secondary">+</button>
+                                </div>
+                            )
+                        })
                 }
 
             </div>
@@ -72,6 +82,7 @@ const AddRecipeForm = () => {
         </form>
     );
 };
-
 export default AddRecipeForm;
+
+
 
