@@ -2,3 +2,7 @@
     display: flex;
     justify-content: center;
 }
+.add-ingredient-bloc{
+    display: flex;
+    gap: 1rem;
+}

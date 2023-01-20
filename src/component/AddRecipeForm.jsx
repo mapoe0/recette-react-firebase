@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import {v4 as uuidv4} from 'uuid';
 
 const AddRecipeForm = () => {
     const [recipe, setRecipe] = useState({
         name: '',
         difficulty: '',
-        ingredients: [],
+        ingredient: [''],
     });
 
     const handleChange = (event) => {
-        const { name, value } = event.target;
-        setRecipe({ ...recipe, [name]: value });
+        const {name, value} = event.target;
+        setRecipe({...recipe, [name]: value});
     };
+    const handleIngredientChange = (event) => {
 
-    const handleIngredientsChange = (event) => {
-        const { value } = event.target;
-        setRecipe({ ...recipe, ingredients: value.split(',') });
-    };
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         // Code to submit the recipe to the server
     };
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -49,12 +49,24 @@ const AddRecipeForm = () => {
             </div>
             <div className="form-group">
                 <label>Ingrédients :</label>
-                <textarea
-                    className="form-control"
-                    name="ingredients"
-                    value={recipe.ingredients.join(',')}
-                    onChange={handleIngredientsChange}
-                />
+                {
+                    recipe.ingredient.map((_, index) => {
+                        return (
+                            <div className="add-ingredient-bloc">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="ingredient"
+                                    value={recipe.ingredient[index]}
+                                    onChange={handleIngredientChange}
+                                    key={uuidv4()}
+                                />
+                                <button className="btn btn-secondary">+</button>
+                            </div>
+                        )
+                    })
+                }
+
             </div>
             <button className="btn btn-primary" type="submit">Ajouter la recette</button>
         </form>
